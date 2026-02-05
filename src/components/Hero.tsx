@@ -25,13 +25,18 @@ export const Hero: React.FC = () => {
       </div>
 
       <div className="relative z-10 container mx-auto px-4 text-center text-white space-y-6 animate-fade-in-up">
-        <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium tracking-wider mb-2 border border-white/30">
+        <a 
+          href="https://www.google.com/maps/place/Povoado+dos+Pinto,+Resende+Costa+-+MG" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-block py-2 px-4 rounded-full bg-white/30 backdrop-blur-md text-sm font-semibold tracking-wider mb-2 border-2 border-white/50 hover:bg-white/40 transition-all shadow-lg"
+        >
           POVOADO DOS PINTO - RESENDE COSTA
-        </span>
-        <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight drop-shadow-lg">
+        </a>
+        <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight" style={{ textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)' }}>
           Viva dias de descanso e <br /> contato com a natureza
         </h1>
-        <p className="text-lg md:text-xl max-w-2xl mx-auto opacity-90 font-light drop-shadow-md">
+        <p className="text-lg md:text-xl max-w-2xl mx-auto font-light bg-black/30 backdrop-blur-sm py-3 px-6 rounded-lg" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
           Seu refúgio completo com cachoeira no quintal, casa ampla e todo o conforto que sua família merece.
         </p>
         

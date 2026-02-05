@@ -14,14 +14,16 @@ export const Footer: React.FC = () => {
             
             {/* Logo e Descrição */}
             <div className="flex flex-col items-center lg:items-start">
-              <Image 
-                src="/logocangumbim.png" 
-                alt="Sítio Cangumbim" 
-                width={200}
-                height={80}
-                className="w-44 sm:w-52 lg:w-56 h-auto mb-4"
-                quality={100}
-              />
+              <a href="#home" className="cursor-pointer">
+                <Image 
+                  src="/logocangumbim.png" 
+                  alt="Sítio Cangumbim" 
+                  width={200}
+                  height={80}
+                  className="w-44 sm:w-52 lg:w-56 h-auto mb-4 hover:opacity-80 transition-opacity"
+                  quality={100}
+                />
+              </a>
               <p className="text-gray-700 text-sm sm:text-base text-center lg:text-left max-w-xs">
                 Seu refúgio na natureza em Resende Costa, MG.<br/>
                 Simplicidade, conforto e memórias para a vida toda.
@@ -68,18 +70,33 @@ export const Footer: React.FC = () => {
                 FALE CONOSCO
               </div>
               <div className="space-y-3 text-sm sm:text-base text-gray-700">
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                <a 
+                  href="https://wa.me/5532999943917" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 justify-center lg:justify-start hover:text-green-600 transition-colors cursor-pointer"
+                >
                   <Phone size={18} className="text-gray-600" />
                   <span>(32) 99994-3917</span>
-                </div>
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                </a>
+                <a 
+                  href="https://instagram.com/sitiocangumbim" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 justify-center lg:justify-start hover:text-green-600 transition-colors cursor-pointer"
+                >
                   <Instagram size={18} className="text-gray-600" />
                   <span>@sitiocangumbim</span>
-                </div>
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                </a>
+                <a 
+                  href="https://www.google.com/maps/place/Povoado+dos+Pinto,+Resende+Costa+-+MG" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 justify-center lg:justify-start hover:text-green-600 transition-colors cursor-pointer"
+                >
                   <MapPin size={18} className="text-gray-600" />
                   <span>Povoado dos Pinto - Resende Costa - MG</span>
-                </div>
+                </a>
               </div>
               
               {/* Social Icons */}

@@ -26,9 +26,9 @@ export const Header: React.FC = () => {
     <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'}`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center gap-2">
+        <a href="#home" className="flex items-center gap-2 cursor-pointer">
           <Image 
-            src="/logocangumbim.png" 
+            src={scrolled ? "/logocangumbim.png" : "/logocangumbimbranco.png"}
             alt="Sítio Cangumbim" 
             width={200}
             height={80}
@@ -36,7 +36,7 @@ export const Header: React.FC = () => {
             priority
             quality={100}
           />
-        </div>
+        </a>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8">

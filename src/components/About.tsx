@@ -24,7 +24,7 @@ export const About: React.FC = () => {
               Sobre este espaço
             </h2>
             <p className="text-gray-600 leading-relaxed text-lg">
-              Viva dias de descanso no <strong>Sítio Cangumbim</strong>, localizado no Povoado dos Pinto, a apenas 13 km de Resende Costa e 30 km de São Tiago. O acesso é feito por uma estrada de terra bem conservada e de fácil tráfego.
+              Viva dias de descanso no <strong>Sítio Cangumbim</strong>, localizado no Povoado dos Pinto, a apenas 13 km de Resende Costa e 30 km de São Tiago. O acesso é feito por uma estrada de terra de fácil tráfego.
             </p>
             <p className="text-gray-600 leading-relaxed">
               Ideal para famílias, casais ou grupos que desejam sossego. Nossa casa ampla oferece <strong>3 quartos (2 suítes)</strong>, cozinha completa com fogão a lenha, e uma área de lazer com sinuca e churrasqueira.
