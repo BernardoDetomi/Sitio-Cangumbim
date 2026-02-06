@@ -26,7 +26,7 @@ export const Hero: React.FC = () => {
 
       <div className="relative z-10 container mx-auto px-4 text-center text-white space-y-6 animate-fade-in-up">
         <a 
-          href="https://www.google.com/maps/place/Povoado+dos+Pinto,+Resende+Costa+-+MG" 
+          href="https://maps.app.goo.gl/M13Ware7njLuCMeW9" 
           target="_blank" 
           rel="noopener noreferrer"
           className="inline-block py-2 px-4 rounded-full bg-white/30 backdrop-blur-md text-sm font-semibold tracking-wider mb-2 border-2 border-white/50 hover:bg-white/40 transition-all shadow-lg"
