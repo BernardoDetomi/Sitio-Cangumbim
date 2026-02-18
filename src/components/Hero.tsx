@@ -13,7 +13,7 @@ export const Hero: React.FC = () => {
       {/* Imagem de Fundo com Overlay */}
       <div className="absolute inset-0 z-0">
         <Image 
-          src="/images/casaexterior.jpg" 
+          src="/images/casaexterior2.jpg" 
           alt="Vista panorâmica do Sítio Cangumbim" 
           fill
           className="object-cover"
