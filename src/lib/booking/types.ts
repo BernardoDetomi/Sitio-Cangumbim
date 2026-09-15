@@ -1,0 +1,13 @@
+export type Status = 'PENDENTE' | 'AGUARDANDO_SINAL' | 'CONFIRMADA' | 'CANCELADA' | 'FINALIZADA';
+export const statusLabels: Record<Status, string> = { PENDENTE: 'Pendente', AGUARDANDO_SINAL: 'Aguardando sinal', CONFIRMADA: 'Confirmada', CANCELADA: 'Cancelada', FINALIZADA: 'Finalizada' };
+export type Guest = { name: string; cpf: string; birthDate: string };
+export type RequestInput = { checkIn: string; checkOut: string; adults: number; children: number; pets: number; responsible: Guest & { phone: string; email: string }; guests: Guest[]; coupon: string; consent: boolean; idempotencyKey: string; quoteToken: string };
+export type Settings = { enabled: boolean; nightly: number; cleaning: number; depositPercent: number; maxGuests: number; whatsapp: string; privacyUrl: string };
+export type Rate = { id: string; name: string; start: string; end: string; nightly: number };
+export type Coupon = { code: string; type: 'percent' | 'fixed'; value: number; start: string; end: string; limit: number; uses: number; active: boolean };
+export type Quote = { nights: { date: string; amount: number }[]; lodging: number; cleaning: number; discount: number; total: number; deposit: number; coupon: string; token: string };
+export type Booking = { id: string; status: Status; input: RequestInput; quote: Quote; createdAt: string; updatedAt: string; confirmedAt?: string; payment?: { amount: number; date: string; method: string; note: string }; history: { at: string; status: Status; actor: string }[] };
+export type CalendarData = { unavailableDates: string[]; airbnbDates: string[]; confirmedDates: string[]; lastUpdated: string };
+export const money = (value: number) => (value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+export const dateLabel = (value: string) => value.split('-').reverse().join('/');
+export const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());

@@ -1,11 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 
 const CONTACT_NUMBER = "5532999943917";
 
-export const FloatingWhatsApp: React.FC = () => (
+export const FloatingWhatsApp: React.FC = () => {
+  const [bookingVisible, setBookingVisible] = useState(false);
+  useEffect(() => {
+    const section = document.getElementById('reservas');
+    if (!section) return;
+    const observer = new IntersectionObserver(([entry]) => setBookingVisible(entry.isIntersecting), { rootMargin: '-80px 0px 0px 0px' });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+  if (bookingVisible) return null;
+  return (
   <a 
     href={`https://wa.me/${CONTACT_NUMBER}`}
     target="_blank"
@@ -18,4 +28,5 @@ export const FloatingWhatsApp: React.FC = () => (
       Falar agora
     </span>
   </a>
-);
+  );
+};
