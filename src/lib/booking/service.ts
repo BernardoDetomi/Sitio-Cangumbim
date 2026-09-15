@@ -88,7 +88,7 @@ export async function saveConfiguration(data: Record<string, unknown>) {
   return transaction(async () => {
     if (data.kind === 'settings') {
       const s = data.value as Awaited<ReturnType<typeof settings>>;
-      requireValue(s && typeof s.enabled === 'boolean' && integer(s.nightly, s.enabled ? 1 : 0, 100000000) && integer(s.cleaning, 0, 100000000) && integer(s.depositPercent, 1, 100) && integer(s.maxGuests, 1, 8), 'Confira os preços, o sinal (1–100%) e a capacidade (até 8 hóspedes).');
+      requireValue(s && typeof s.enabled === 'boolean' && integer(s.nightly, s.enabled ? 1 : 0, 100000000) && integer(s.cleaning, 0, 100000000) && integer(s.depositPercent, 1, 100) && integer(s.maxGuests, 1, 10), 'Confira os preços, o sinal (1–100%) e a capacidade (até 10 hóspedes).');
       requireValue(typeof s.whatsapp === 'string' && /^\d{10,15}$/.test(s.whatsapp), 'WhatsApp deve conter país, DDD e número.');
       requireValue(typeof s.privacyUrl === 'string' && (s.privacyUrl === '' || /^https:\/\/[^\s]+$/.test(s.privacyUrl)), 'Use uma URL HTTPS para a política de privacidade.');
       await query('UPDATE settings SET data=$1 WHERE id=1', [{ enabled: s.enabled, nightly: s.nightly, cleaning: s.cleaning, depositPercent: s.depositPercent, maxGuests: s.maxGuests, whatsapp: s.whatsapp, privacyUrl: s.privacyUrl }]);
