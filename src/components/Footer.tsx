@@ -1,10 +1,31 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import { Phone, Instagram, MapPin } from 'lucide-react';
 import Image from 'next/image';
 
 const AIRBNB_LINK = "https://www.airbnb.com.br/rooms/1400169773928514039";
 
 export const Footer: React.FC = () => {
+  const [privacyUrl, setPrivacyUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/booking');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (mounted && data?.privacyUrl) setPrivacyUrl(data.privacyUrl || null);
+      } catch (e) {
+        // ignore
+      }
+    })();
+    return () => { mounted = false };
+  }, []);
+
+  const privacyHref = privacyUrl && privacyUrl.length ? privacyUrl : '/politica-privacidade';
+  const privacyTarget = privacyUrl && privacyUrl.length ? '_blank' : undefined;
+  const privacyRel = privacyTarget ? 'noreferrer' : undefined;
   return (
     <footer id="contato" className="shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
       {/* Faixa superior clara */}
@@ -54,6 +75,17 @@ export const Footer: React.FC = () => {
                 <li>
                   <a href="#reservas" className="text-gray-700 hover:text-green-600 transition-colors">
                     Reservas
+                  </a>
+                </li>
+                {/** Privacy link: use configured URL from /api/booking if provided, fallback to local page */}
+                <li>
+                  <a href={privacyHref} target={privacyTarget} rel={privacyRel} className="text-gray-700 hover:text-green-600 transition-colors">
+                    Política de Privacidade
+                  </a>
+                </li>
+                <li>
+                  <a href="/lgpd" className="text-gray-700 hover:text-green-600 transition-colors">
+                    LGPD
                   </a>
                 </li>
                 <li>
