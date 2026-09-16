@@ -4,7 +4,7 @@
 
 @layer components {
   #reservas, #reservas h3[tabindex] { scroll-margin-top: 6rem; }
-  .reservation-input { @apply block w-full min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-700; }
+  .reservation-input { @apply block w-full min-w-0 max-w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-700; }
   .reservation-button { @apply rounded-xl bg-green-700 px-5 py-3 font-medium text-white hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 disabled:opacity-50 disabled:cursor-not-allowed; }
   .reservation-secondary { @apply rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-700 disabled:opacity-50; }
   .reservation-coupon { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 font-semibold text-white hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 disabled:opacity-50 disabled:cursor-not-allowed; }

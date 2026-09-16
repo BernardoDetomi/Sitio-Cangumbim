@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes } from 'react';
 import { dateLabel, money, type Guest, type Quote } from '@/lib/booking/types';
 export function Field({ label, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
-  return <label className="block text-sm font-medium space-y-1"><span>{label}</span><input className="reservation-input" {...props} /></label>;
+  return <label className="block min-w-0 max-w-full text-sm font-medium space-y-1"><span>{label}</span><input className="reservation-input max-w-full" {...props} /></label>;
 }
 export function GuestFields({ value, onChange }: { value: Guest; onChange: (value: Guest) => void }) {
   return <div className="grid sm:grid-cols-2 gap-4"><Field label="Nome completo" autoComplete="name" placeholder="Ex.: Maria da Silva" required minLength={3} maxLength={150} value={value.name} onChange={e => onChange({ ...value, name: e.target.value })} /><Field label="CPF" inputMode="numeric" placeholder="000.000.000-00" required maxLength={14} value={value.cpf} onChange={e => onChange({ ...value, cpf: e.target.value })} /><Field label="Data de nascimento" type="date" required value={value.birthDate} onChange={e => onChange({ ...value, birthDate: e.target.value })} /></div>;
