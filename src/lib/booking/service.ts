@@ -115,6 +115,16 @@ export async function saveConfiguration(data: Record<string, unknown>) {
     } else if (data.kind === 'deleteRate') {
       requireValue(textValue(data.id), 'Tarifa inválida.');
       await query('DELETE FROM rates WHERE id=$1', [data.id]);
+    } else if (data.kind === 'deleteCoupon') {
+      const code = typeof data.code === 'string' ? data.code.toUpperCase() : '';
+      requireValue(/^[A-Z0-9_-]{2,40}$/.test(code), 'Cupom inválido.');
+      await query('DELETE FROM coupons WHERE code=$1', [code]);
+    } else if (data.kind === 'resetCouponUses') {
+      const code = typeof data.code === 'string' ? data.code.toUpperCase() : '';
+      requireValue(/^[A-Z0-9_-]{2,40}$/.test(code), 'Cupom inválido.');
+      const coupon = (await coupons()).find(item => item.code === code);
+      requireValue(coupon, 'Cupom não encontrado.');
+      await query('UPDATE coupons SET data=$1 WHERE code=$2', [{ ...coupon, uses: 0 }, coupon.code]);
     } else if (data.kind === 'coupon') {
       const c = data.value as Coupon;
       requireValue(c && typeof c.code === 'string' && /^[A-Z0-9_-]{2,40}$/.test(c.code.toUpperCase()) && ['percent', 'fixed'].includes(c.type) && integer(c.value, 1, c.type === 'percent' ? 100 : 100000000) && integer(c.limit, 0, 1000000) && typeof c.active === 'boolean' && (c.accumulative === undefined || typeof c.accumulative === 'boolean') && validDate(c.start) && validDate(c.end) && c.start <= c.end, 'Confira o código, valor, validade e limite do cupom.');

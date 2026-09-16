@@ -131,6 +131,18 @@ test('configuration rejects overlapping tariffs and invalid values', async () =>
   assert.equal(validation.ageAt('2010-10-11', '2028-10-11'), 18);
 });
 
+test('coupon uses can be reset and coupons can be deleted', async () => {
+  const coupon = { code: 'LIMPAR', type: 'percent', value: 10, start: today(), end, limit: 1, active: true };
+  await service.saveConfiguration({ kind: 'coupon', value: coupon });
+  const quote = await service.calculateQuote(start, end, coupon.code);
+  await service.createRequest(await input({ coupon: coupon.code, quoteToken: quote.token }));
+  assert.equal((await store.coupons())[0].uses, 1);
+  await service.saveConfiguration({ kind: 'resetCouponUses', code: coupon.code });
+  assert.equal((await store.coupons())[0].uses, 0);
+  await service.saveConfiguration({ kind: 'deleteCoupon', code: coupon.code });
+  assert.deepEqual(await store.coupons(), []);
+});
+
 test('migrations are repeatable and never reset configured prices', async () => {
   const { migrate } = await import('../scripts/migrate.mjs');
   const a = await service.createRequest(await input());
