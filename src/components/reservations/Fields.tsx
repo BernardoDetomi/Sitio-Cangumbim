@@ -11,7 +11,7 @@ export function PriceSummary({ quote }: { quote: Quote }) {
     <details><summary className="cursor-pointer">{quote.nights.length} diárias — {money(quote.lodging)}</summary><ul className="mt-2 text-sm space-y-1">{quote.nights.map(n => <li key={n.date} className="flex justify-between gap-2"><span>{dateLabel(n.date)}</span><span>{money(n.amount)}</span></li>)}</ul></details>
     <div className="flex justify-between gap-2"><span>Taxa de limpeza</span><span>{money(quote.cleaning)}</span></div>
     <div className="flex justify-between gap-2"><span>Subtotal</span><span>{money(quote.lodging + quote.cleaning)}</span></div>
-    {quote.coupon && <div className="flex justify-between gap-2"><span>Cupom {quote.coupon}</span><span>−{money(quote.discount)}</span></div>}
+    {quote.coupon && <div className="flex justify-between gap-2"><span>Cupons {quote.coupon.split(',').join(', ')}</span><span>−{money(quote.discount)}</span></div>}
     <div className="flex justify-between gap-2 border-t border-green-200 pt-3 text-xl font-bold"><span>Total</span><span>{money(quote.total)}</span></div>
     <p className="text-sm">Sinal previsto: {money(quote.deposit)}<br />Restante no check-in: {money(quote.total - quote.deposit)}</p>
   </div>;

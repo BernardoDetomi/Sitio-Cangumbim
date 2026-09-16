@@ -38,6 +38,8 @@ export function validateInput(input: RequestInput, maxGuests: number): RequestIn
   requireValue([responsible, ...guests].filter(g => ageAt(g.birthDate, input.checkIn) < 18).length === input.children, 'Confira adultos e crianças: menores de 18 anos no check-in contam como crianças.');
   requireValue(input.consent === true, 'É necessário autorizar o uso dos dados para a reserva.');
   requireValue(typeof input.idempotencyKey === 'string' && /^[a-f0-9-]{36}$/.test(input.idempotencyKey), 'Identificador da solicitação inválido.');
-  requireValue(typeof input.coupon === 'string' && input.coupon.length <= 40 && typeof input.quoteToken === 'string', 'Cotação inválida.');
-  return { checkIn: input.checkIn, checkOut: input.checkOut, adults: input.adults, children: input.children, pets: input.pets, responsible: { ...responsible, phone: input.responsible.phone.trim(), email: input.responsible.email.trim() }, guests, consent: true, coupon: input.coupon.trim().toUpperCase(), idempotencyKey: input.idempotencyKey, quoteToken: input.quoteToken };
+  requireValue(typeof input.coupon === 'string' && input.coupon.length <= 204 && typeof input.quoteToken === 'string', 'Cotação inválida.');
+  const couponCodes = input.coupon.trim().toUpperCase().split(/[\s,]+/).filter(Boolean);
+  requireValue(couponCodes.every(code => /^[A-Z0-9_-]{2,40}$/.test(code)) && couponCodes.join(',').length <= 40 * 5 + 4, 'Cupom inválido.');
+  return { checkIn: input.checkIn, checkOut: input.checkOut, adults: input.adults, children: input.children, pets: input.pets, responsible: { ...responsible, phone: input.responsible.phone.trim(), email: input.responsible.email.trim() }, guests, consent: true, coupon: couponCodes.join(','), idempotencyKey: input.idempotencyKey, quoteToken: input.quoteToken };
 }

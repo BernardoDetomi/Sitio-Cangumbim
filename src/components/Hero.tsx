@@ -1,11 +1,9 @@
 'use client';
 
 import React from 'react';
-import { MessageCircle } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { Button } from './Button';
 import Image from 'next/image';
-
-const CONTACT_NUMBER = "5532999943917";
 
 export const Hero: React.FC = () => {
   return (
@@ -40,12 +38,9 @@ export const Hero: React.FC = () => {
           Seu refúgio completo com cachoeira no quintal, casa ampla e todo o conforto que sua família merece.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-          <Button variant="primary" onClick={() => document.getElementById('reservas')?.scrollIntoView({ behavior: 'smooth' })}>
-            Verificar Disponibilidade
-          </Button>
-          <Button variant="outline" icon={MessageCircle} onClick={() => window.open(`https://wa.me/${CONTACT_NUMBER}`, '_blank')}>
-            Falar no WhatsApp
+        <div className="flex justify-center pt-8">
+          <Button variant="primary" icon={CalendarDays} className="w-full sm:w-auto" onClick={() => document.getElementById('reservas')?.scrollIntoView({ behavior: 'smooth' })}>
+            Garanta sua pausa no campo
           </Button>
         </div>
       </div>

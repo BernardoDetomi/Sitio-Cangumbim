@@ -21,8 +21,8 @@ export default function Home() {
       <RoomDetails />
       <Amenities />
       <Gallery />
-      <LocalTips />
       <BookingCalendar />
+      <LocalTips />
       <Reviews />
       <Footer />
       <FloatingWhatsApp />

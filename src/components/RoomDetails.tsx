@@ -7,7 +7,7 @@ export const RoomDetails: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
            <span className="text-green-700 font-bold tracking-widest uppercase text-sm">Conforto e Privacidade</span>
-           <h2 className="text-3xl font-serif font-bold text-gray-800 mt-2">Distribuição dos Quartos</h2>
+           <h2 className="text-3xl font-serif font-bold text-gray-800 mt-2">Distribuição dos quartos</h2>
            <p className="text-gray-600 mt-4">Acomoda até 8 pessoas com conforto em 3 quartos espaçosos.</p>
         </div>
 

@@ -9,22 +9,34 @@ export async function calculateQuote(start: string, end: string, code = ''): Pro
   const config = await settings();
   requireValue(config.enabled && config.nightly > 0, 'As reservas diretas ainda não estão abertas. Entre em contato pelo WhatsApp.');
   requireValue(start >= today(), 'O check-in não pode estar no passado.');
-  requireValue(typeof code === 'string' && code.length <= 40, 'Cupom inválido.');
+  requireValue(typeof code === 'string' && code.length <= 204, 'Cupom inválido.');
   const periods = await rates();
   const nights = nightsBetween(start, end).map(date => ({ date, amount: periods.find(rate => rate.start <= date && date < rate.end)?.nightly ?? config.nightly }));
   const lodging = nights.reduce((sum, night) => sum + night.amount, 0);
   const subtotal = lodging + config.cleaning;
-  const couponCode = code.trim().toUpperCase();
+  const couponCodes = code.trim().toUpperCase().split(/[\s,]+/).filter(Boolean);
+  requireValue(couponCodes.every(item => /^[A-Z0-9_-]{2,40}$/.test(item)), 'Cupom inválido.');
   let discount = 0;
-  if (couponCode) {
-    const coupon = (await coupons()).find(c => c.code === couponCode);
-    requireValue(coupon && coupon.active, 'Cupom inválido ou desativado.');
-    requireValue(coupon.start <= today() && today() <= coupon.end, 'Cupom fora do período de validade.');
-    requireValue(coupon.limit === 0 || coupon.uses < coupon.limit, 'O cupom atingiu o limite de utilizações.');
-    discount = Math.min(subtotal, coupon.type === 'percent' ? Math.round(subtotal * coupon.value / 100) : coupon.value);
+  const selectedCoupons = [];
+  if (couponCodes.length) {
+    const availableCoupons = await coupons();
+    for (const couponCode of [...new Set(couponCodes)]) {
+      const coupon = availableCoupons.find(c => c.code === couponCode);
+      requireValue(coupon && coupon.active, 'Cupom inválido ou desativado.');
+      requireValue(coupon.start <= today() && today() <= coupon.end, 'Cupom fora do período de validade.');
+      requireValue(coupon.limit === 0 || coupon.uses < coupon.limit, 'O cupom atingiu o limite de utilizações.');
+      selectedCoupons.push(coupon);
+    }
+    requireValue(selectedCoupons.length === 1 || selectedCoupons.every(coupon => coupon.accumulative === true), 'Este cupom só pode ser usado sozinho.');
+    let remaining = subtotal;
+    for (const coupon of selectedCoupons) {
+      const currentDiscount = Math.min(remaining, coupon.type === 'percent' ? Math.round(remaining * coupon.value / 100) : coupon.value);
+      discount += currentDiscount;
+      remaining -= currentDiscount;
+    }
   }
   const total = subtotal - discount;
-  const values = { nights, lodging, cleaning: config.cleaning, discount, total, deposit: Math.round(total * config.depositPercent / 100), coupon: couponCode };
+  const values = { nights, lodging, cleaning: config.cleaning, discount, total, deposit: Math.round(total * config.depositPercent / 100), coupon: [...new Set(couponCodes)].join(',') };
   return { ...values, token: createHash('sha256').update(JSON.stringify(values)).digest('hex') };
 }
 export function whatsappMessage(booking: Booking) {
@@ -52,9 +64,11 @@ export async function createRequest(raw: RequestInput) {
     const booking: Booking = { id: `SC-${today().slice(0, 4)}-${randomUUID().slice(0, 8).toUpperCase()}`, status: 'PENDENTE', input, quote, createdAt: now, updatedAt: now, history: [{ at: now, status: 'PENDENTE', actor: 'Solicitação pelo site; consentimento v1 aceito' }] };
     await query('INSERT INTO bookings (id, request_key, status, check_in, check_out, data, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $7)', [booking.id, input.idempotencyKey, booking.status, input.checkIn, input.checkOut, booking, now]);
     if (quote.coupon) {
-      const coupon = (await coupons()).find(c => c.code === quote.coupon)!;
-      coupon.uses++;
-      await query('UPDATE coupons SET data=$1 WHERE code=$2', [coupon, coupon.code]);
+      for (const code of quote.coupon.split(',')) {
+        const coupon = (await coupons()).find(c => c.code === code)!;
+        coupon.uses++;
+        await query('UPDATE coupons SET data=$1 WHERE code=$2', [coupon, coupon.code]);
+      }
     }
     return receipt(booking);
   });
@@ -103,9 +117,9 @@ export async function saveConfiguration(data: Record<string, unknown>) {
       await query('DELETE FROM rates WHERE id=$1', [data.id]);
     } else if (data.kind === 'coupon') {
       const c = data.value as Coupon;
-      requireValue(c && typeof c.code === 'string' && /^[A-Z0-9_-]{2,40}$/.test(c.code.toUpperCase()) && ['percent', 'fixed'].includes(c.type) && integer(c.value, 1, c.type === 'percent' ? 100 : 100000000) && integer(c.limit, 0, 1000000) && typeof c.active === 'boolean' && validDate(c.start) && validDate(c.end) && c.start <= c.end, 'Confira o código, valor, validade e limite do cupom.');
+      requireValue(c && typeof c.code === 'string' && /^[A-Z0-9_-]{2,40}$/.test(c.code.toUpperCase()) && ['percent', 'fixed'].includes(c.type) && integer(c.value, 1, c.type === 'percent' ? 100 : 100000000) && integer(c.limit, 0, 1000000) && typeof c.active === 'boolean' && (c.accumulative === undefined || typeof c.accumulative === 'boolean') && validDate(c.start) && validDate(c.end) && c.start <= c.end, 'Confira o código, valor, validade e limite do cupom.');
       const previous = (await coupons()).find(item => item.code === c.code.toUpperCase());
-      const coupon = { code: c.code.toUpperCase(), type: c.type, value: c.value, start: c.start, end: c.end, limit: c.limit, active: c.active, uses: previous?.uses ?? 0 };
+      const coupon = { code: c.code.toUpperCase(), type: c.type, value: c.value, start: c.start, end: c.end, limit: c.limit, active: c.active, accumulative: c.accumulative === true, uses: previous?.uses ?? 0 };
       await query('INSERT INTO coupons (code, data) VALUES ($1, $2) ON CONFLICT (code) DO UPDATE SET data=EXCLUDED.data', [coupon.code, coupon]);
     } else throw new BookingError('Configuração inválida.');
   });

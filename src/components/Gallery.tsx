@@ -146,7 +146,7 @@ export const Gallery: React.FC = () => {
   return (
     <section id="galeria" className="py-20 bg-stone-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 text-center mb-8">Nossos Cantinhos</h2>
+        <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 text-center mb-8">Nossos cantinhos</h2>
         
         {/* Filtros */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">

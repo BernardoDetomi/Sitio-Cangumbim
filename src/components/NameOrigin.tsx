@@ -20,7 +20,7 @@ export const NameOrigin: React.FC = () => {
           </div>
           <div className="w-full md:w-1/2 space-y-6">
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800">
-              🌿 Sítio Cangumbim: Onde a História e a Natureza se Encontram 🌿
+              🌿 Sítio Cangumbim: onde a história e a natureza se encontram 🌿
             </h2>
             <p className="text-gray-600 leading-relaxed text-lg">
               O nome "Cangumbim" ecoa histórias de resistência, memória e conexão com a terra. 🌍💧

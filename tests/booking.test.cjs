@@ -98,6 +98,14 @@ test('coupon validation: inactive, expired, future, fixed clamp and atomic limit
   const result = await Promise.allSettled([1, 2].map(async () => service.createRequest(await input({ coupon: 'TESTE', quoteToken: q.token }))));
   assert.equal(result.filter(r => r.status === 'fulfilled').length, 1);
 });
+test('accumulative coupons combine only with other accumulative coupons', async () => {
+  await service.saveConfiguration({ kind: 'coupon', value: { code: 'ACUM10', type: 'percent', value: 10, start: today(), end, limit: 0, active: true, accumulative: true } });
+  await service.saveConfiguration({ kind: 'coupon', value: { code: 'ACUM20', type: 'percent', value: 20, start: today(), end, limit: 0, active: true, accumulative: true } });
+  await service.saveConfiguration({ kind: 'coupon', value: { code: 'SOZINHO', type: 'percent', value: 5, start: today(), end, limit: 0, active: true, accumulative: false } });
+  const accumulated = await service.calculateQuote(start, end, 'ACUM10,ACUM20');
+  assert.equal(accumulated.discount, 34440);
+  await assert.rejects(() => service.calculateQuote(start, end, 'ACUM10,SOZINHO'), /sozinho/);
+});
 test('backend rejects invalid personal data, overcapacity, stale quotes and invalid transitions', async () => {
   const base = await input();
   for (const change of [{ consent: false }, { adults: 9 }, { checkOut: start }, { checkIn: '2026-02-30' }, { responsible: { ...base.responsible, cpf: '11111111111' } }, { responsible: { ...base.responsible, birthDate: today() } }, { guests: [base.responsible] }]) {

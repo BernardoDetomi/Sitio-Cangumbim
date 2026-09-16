@@ -18,8 +18,8 @@ export const Header: React.FC = () => {
     { name: 'O Sítio', href: '#sobre' },
     { name: 'Acomodações', href: '#acomodacoes' },
     { name: 'Fotos', href: '#galeria' },
-    { name: 'Dicas Locais', href: '#dicas' },
     { name: 'Reservar', href: '#reservas' },
+    { name: 'Dicas locais', href: '#dicas' },
   ];
 
   return (
