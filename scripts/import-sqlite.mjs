@@ -27,7 +27,7 @@ export async function importSqlite(pool, sourcePath) {
     await client.query('LOCK TABLE settings, rates, coupons, bookings IN ACCESS EXCLUSIVE MODE');
     const occupied = await client.query('SELECT (SELECT count(*) FROM bookings) + (SELECT count(*) FROM rates) + (SELECT count(*) FROM coupons) AS total');
     const target = (await client.query('SELECT data FROM settings WHERE id=1')).rows[0]?.data;
-    const initial = { enabled: false, nightly: 0, cleaning: 0, depositPercent: 50, maxGuests: 8, whatsapp: '5532999943917', privacyUrl: '' };
+    const initial = { enabled: false, nightly: 0, cleaning: 0, nightlyTwoGuests: 0, cleaningTwoGuests: 0, depositPercent: 50, maxGuests: 8, whatsapp: '5532999943917', privacyUrl: '' };
     if (Number(occupied.rows[0].total) !== 0 || !isDeepStrictEqual(target, initial)) throw new Error('Use um banco recém-migrado e vazio como destino. Nenhum dado foi substituído.');
     for (const row of snapshot.rates) await client.query('INSERT INTO rates (id, data) VALUES ($1, $2)', [row.id, JSON.parse(row.data)]);
     for (const row of snapshot.coupons) await client.query('INSERT INTO coupons (code, data) VALUES ($1, $2)', [row.code, JSON.parse(row.data)]);

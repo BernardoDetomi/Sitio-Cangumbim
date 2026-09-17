@@ -36,4 +36,4 @@ CREATE TABLE attempts (
   count integer NOT NULL,
   expires bigint NOT NULL
 );
-INSERT INTO settings (id, data) VALUES (1, '{"enabled":false,"nightly":0,"cleaning":0,"depositPercent":50,"maxGuests":8,"whatsapp":"5532999943917","privacyUrl":""}');
+INSERT INTO settings (id, data) VALUES (1, '{"enabled":false,"nightly":0,"cleaning":0,"nightlyTwoGuests":0,"cleaningTwoGuests":0,"depositPercent":50,"maxGuests":8,"whatsapp":"5532999943917","privacyUrl":""}');

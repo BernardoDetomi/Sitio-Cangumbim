@@ -5,15 +5,20 @@ import { airbnbDates, assertAvailable } from './calendar';
 import { BookingError, integer, nightsBetween, requireValue, textValue, validDate, validateInput } from './validation';
 import { dateLabel, money, today, type Booking, type Coupon, type Quote, type RequestInput, type Status } from './types';
 
-export async function calculateQuote(start: string, end: string, code = ''): Promise<Quote> {
+export async function calculateQuote(start: string, end: string, code = '', adults = 1, children = 0): Promise<Quote> {
   const config = await settings();
   requireValue(config.enabled && config.nightly > 0, 'As reservas diretas ainda não estão abertas. Entre em contato pelo WhatsApp.');
   requireValue(start >= today(), 'O check-in não pode estar no passado.');
+  requireValue(integer(adults, 1, config.maxGuests) && integer(children, 0, config.maxGuests) && adults + children <= config.maxGuests, `A capacidade é de ${config.maxGuests} hóspedes.`);
   requireValue(typeof code === 'string' && code.length <= 204, 'Cupom inválido.');
   const periods = await rates();
-  const nights = nightsBetween(start, end).map(date => ({ date, amount: periods.find(rate => rate.start <= date && date < rate.end)?.nightly ?? config.nightly }));
+  const smallGroup = adults === 2 && children <= 1;
+  const defaultNightly = smallGroup ? config.nightlyTwoGuests : config.nightly;
+  const cleaning = smallGroup ? config.cleaningTwoGuests : config.cleaning;
+  requireValue(defaultNightly > 0, 'Configure a diária para esta quantidade de hóspedes no painel administrativo.');
+  const nights = nightsBetween(start, end).map(date => ({ date, amount: periods.find(rate => rate.start <= date && date < rate.end)?.nightly ?? defaultNightly }));
   const lodging = nights.reduce((sum, night) => sum + night.amount, 0);
-  const subtotal = lodging + config.cleaning;
+  const subtotal = lodging + cleaning;
   const couponCodes = code.trim().toUpperCase().split(/[\s,]+/).filter(Boolean);
   requireValue(couponCodes.every(item => /^[A-Z0-9_-]{2,40}$/.test(item)), 'Cupom inválido.');
   let discount = 0;
@@ -36,7 +41,7 @@ export async function calculateQuote(start: string, end: string, code = ''): Pro
     }
   }
   const total = subtotal - discount;
-  const values = { nights, lodging, cleaning: config.cleaning, discount, total, deposit: Math.round(total * config.depositPercent / 100), coupon: [...new Set(couponCodes)].join(',') };
+  const values = { nights, lodging, cleaning, discount, total, deposit: Math.round(total * config.depositPercent / 100), coupon: [...new Set(couponCodes)].join(',') };
   return { ...values, token: createHash('sha256').update(JSON.stringify(values)).digest('hex') };
 }
 export function whatsappMessage(booking: Booking) {
@@ -58,7 +63,7 @@ export async function createRequest(raw: RequestInput) {
     }
     validateInput(input, (await settings()).maxGuests);
     await assertAvailable(input.checkIn, input.checkOut, external);
-    const quote = await calculateQuote(input.checkIn, input.checkOut, input.coupon);
+    const quote = await calculateQuote(input.checkIn, input.checkOut, input.coupon, input.adults, input.children);
     if (quote.token !== input.quoteToken) throw new BookingError('Os valores mudaram. Volte ao resumo para atualizar a cotação.', 409);
     const now = new Date().toISOString();
     const booking: Booking = { id: `SC-${today().slice(0, 4)}-${randomUUID().slice(0, 8).toUpperCase()}`, status: 'PENDENTE', input, quote, createdAt: now, updatedAt: now, history: [{ at: now, status: 'PENDENTE', actor: 'Solicitação pelo site; consentimento v1 aceito' }] };
@@ -102,10 +107,12 @@ export async function saveConfiguration(data: Record<string, unknown>) {
   return transaction(async () => {
     if (data.kind === 'settings') {
       const s = data.value as Awaited<ReturnType<typeof settings>>;
-      requireValue(s && typeof s.enabled === 'boolean' && integer(s.nightly, s.enabled ? 1 : 0, 100000000) && integer(s.cleaning, 0, 100000000) && integer(s.depositPercent, 1, 100) && integer(s.maxGuests, 1, 10), 'Confira os preços, o sinal (1–100%) e a capacidade (até 10 hóspedes).');
+      const nightlyTwoGuests = s.nightlyTwoGuests ?? s.nightly;
+      const cleaningTwoGuests = s.cleaningTwoGuests ?? s.cleaning;
+      requireValue(s && typeof s.enabled === 'boolean' && integer(s.nightly, s.enabled ? 1 : 0, 100000000) && integer(s.cleaning, 0, 100000000) && integer(nightlyTwoGuests, s.enabled ? 1 : 0, 100000000) && integer(cleaningTwoGuests, 0, 100000000) && integer(s.depositPercent, 1, 100) && integer(s.maxGuests, 1, 10), 'Confira os preços, o sinal (1–100%) e a capacidade (até 10 hóspedes).');
       requireValue(typeof s.whatsapp === 'string' && /^\d{10,15}$/.test(s.whatsapp), 'WhatsApp deve conter país, DDD e número.');
       requireValue(typeof s.privacyUrl === 'string' && (s.privacyUrl === '' || /^https:\/\/[^\s]+$/.test(s.privacyUrl)), 'Use uma URL HTTPS para a política de privacidade.');
-      await query('UPDATE settings SET data=$1 WHERE id=1', [{ enabled: s.enabled, nightly: s.nightly, cleaning: s.cleaning, depositPercent: s.depositPercent, maxGuests: s.maxGuests, whatsapp: s.whatsapp, privacyUrl: s.privacyUrl }]);
+      await query('UPDATE settings SET data=$1 WHERE id=1', [{ enabled: s.enabled, nightly: s.nightly, cleaning: s.cleaning, nightlyTwoGuests, cleaningTwoGuests, depositPercent: s.depositPercent, maxGuests: s.maxGuests, whatsapp: s.whatsapp, privacyUrl: s.privacyUrl }]);
     } else if (data.kind === 'rate') {
       const r = data.value as Awaited<ReturnType<typeof rates>>[number];
       requireValue(r && textValue(r.name, 2, 80) && validDate(r.start) && validDate(r.end) && r.start < r.end && integer(r.nightly, 1, 100000000), 'Confira o nome, período e valor da tarifa.');

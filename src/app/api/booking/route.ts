@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     sameOrigin(request);
     const data = await body(request);
     if (data.action === 'quote') {
-      const quote = await calculateQuote(data.checkIn, data.checkOut, data.coupon);
+      const quote = await calculateQuote(data.checkIn, data.checkOut, data.coupon, data.adults, data.children);
       await assertAvailable(data.checkIn, data.checkOut, await airbnbDates());
       return json(quote);
     }

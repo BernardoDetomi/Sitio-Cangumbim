@@ -32,7 +32,7 @@ export const BookingCalendar = () => {
     else update({ checkOut: day });
   }
   async function refreshQuote(coupon = input.coupon) {
-    const q = await api<Quote>('/api/booking', { action: 'quote', checkIn: input.checkIn, checkOut: input.checkOut, coupon });
+    const q = await api<Quote>('/api/booking', { action: 'quote', checkIn: input.checkIn, checkOut: input.checkOut, adults: input.adults, children: input.children, coupon });
     setQuote(q); setInput(i => ({ ...i, coupon, quoteToken: q.token })); return q;
   }
   async function applyCoupon() { const code = couponDraft.trim().toUpperCase(); if (!code) return; const coupons = [...new Set([...input.coupon.split(',').filter(Boolean), code])].join(','); setBusy(true); setError(''); try { await refreshQuote(coupons); setCouponDraft(''); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }

@@ -54,7 +54,8 @@ export async function transaction<T>(fn: () => Promise<T>): Promise<T> {
 export async function settings(): Promise<Settings> {
   const result = await query<{ data: Settings }>('SELECT data FROM settings WHERE id=1');
   if (!result.rows[0]) throw new BookingError('Execute a migração do banco antes de abrir as reservas.', 503);
-  return result.rows[0].data;
+  const data = result.rows[0].data;
+  return { ...data, nightlyTwoGuests: data.nightlyTwoGuests ?? data.nightly, cleaningTwoGuests: data.cleaningTwoGuests ?? data.cleaning };
 }
 export async function rates(): Promise<Rate[]> {
   return (await query<{ data: Rate }>('SELECT data FROM rates ORDER BY id')).rows.map(row => row.data);
