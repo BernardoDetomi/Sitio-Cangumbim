@@ -85,17 +85,21 @@ test('seasonal nightly rates, cent rounding, coupons and price snapshots', async
   const message = decodeURIComponent(result.whatsappUrl);
   assert(message.includes('CPF: 52998224725') && message.includes(result.id) && message.includes('CANGUMBIM10'));
 });
-test('uses the special price for two adults with zero or one child', async () => {
+test('uses the special price for one or two adults with zero or one child', async () => {
   await service.saveConfiguration({ kind: 'settings', value: { ...(await store.settings()), nightlyTwoGuests: 25000, cleaningTwoGuests: 8000 } });
-  const standard = await service.calculateQuote(start, end, '', 1, 0);
+  const oneAdult = await service.calculateQuote(start, end, '', 1, 0);
+  const oneAdultWithChild = await service.calculateQuote(start, end, '', 1, 1);
   const adultsOnly = await service.calculateQuote(start, end, '', 2, 0);
   const withChild = await service.calculateQuote(start, end, '', 2, 1);
   const threeAdults = await service.calculateQuote(start, end, '', 3, 0);
-  assert.equal(standard.lodging, 108000);
+  const twoChildren = await service.calculateQuote(start, end, '', 1, 2);
+  assert.equal(oneAdult.lodging, 75000);
+  assert.equal(oneAdultWithChild.total, 83000);
   assert.equal(adultsOnly.lodging, 75000);
   assert.equal(adultsOnly.cleaning, 8000);
   assert.equal(withChild.total, 83000);
-  assert.equal(threeAdults.total, standard.total);
+  assert.equal(threeAdults.total, 123000);
+  assert.equal(twoChildren.total, 123000);
 });
 test('coupon validation: inactive, expired, future, fixed clamp and atomic limit', async () => {
   const coupon = { code: 'TESTE', type: 'fixed', value: 999999, start: today(), end, limit: 1, active: true };

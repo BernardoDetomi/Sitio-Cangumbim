@@ -133,7 +133,7 @@ PENDENTE → AGUARDANDO_SINAL → CONFIRMADA → FINALIZADA
 - Falha no Airbnb, calendário malformado ou recorrência não suportada impedem cotar, solicitar e confirmar; não são interpretados como disponibilidade.
 - iCal não oferece transação distribuída com o Airbnb: uma mudança externa posterior à consulta ainda pode gerar conflito. Não há exportação automática das reservas diretas para o Airbnb nesta versão.
 - Capacidade inicial: oito pessoas, incluindo crianças. Responsável maior de idade. Menores de 18 anos no check-in contam como crianças. CPF obrigatório para todos nesta versão.
-- Tarifa especial substitui a padrão por noite; períodos especiais não podem se sobrepor e seu fim é exclusivo. Para 2 adultos ou 2 adultos + 1 criança, o painel permite definir uma diária e uma taxa de limpeza próprias; essa regra é aplicada quando não houver tarifa especial por período.
+- Tarifa especial substitui a padrão por noite; períodos especiais não podem se sobrepor e seu fim é exclusivo. Para 1 ou 2 adultos, com até 1 criança, o painel permite definir uma diária e uma taxa de limpeza próprias; essa regra é aplicada quando não houver tarifa especial por período.
 - Cupom percentual ou fixo incide sobre diárias + limpeza, limitado ao subtotal. Validade inclusiva pela data da solicitação no fuso de São Paulo; limite zero significa ilimitado.
 - Cada solicitação salva consome um uso do cupom, mesmo pendente. Cancelamentos não devolvem usos. Reenvio idempotente não consome outro uso.
 - O servidor recalcula o orçamento ao salvar e rejeita valores desatualizados. Solicitações salvas mantêm os preços originais. O sinal previsto é percentual; o administrador pode registrar outro valor recebido, até o total.

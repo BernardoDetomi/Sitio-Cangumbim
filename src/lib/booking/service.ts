@@ -12,7 +12,7 @@ export async function calculateQuote(start: string, end: string, code = '', adul
   requireValue(integer(adults, 1, config.maxGuests) && integer(children, 0, config.maxGuests) && adults + children <= config.maxGuests, `A capacidade é de ${config.maxGuests} hóspedes.`);
   requireValue(typeof code === 'string' && code.length <= 204, 'Cupom inválido.');
   const periods = await rates();
-  const smallGroup = adults === 2 && children <= 1;
+  const smallGroup = adults >= 1 && adults <= 2 && children <= 1;
   const defaultNightly = smallGroup ? config.nightlyTwoGuests : config.nightly;
   const cleaning = smallGroup ? config.cleaningTwoGuests : config.cleaning;
   requireValue(defaultNightly > 0, 'Configure a diária para esta quantidade de hóspedes no painel administrativo.');
