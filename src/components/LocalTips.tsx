@@ -1,11 +1,21 @@
 import React from 'react';
-import { ShoppingBag, Utensils, Coffee, Sprout, MessageCircle, Phone } from 'lucide-react';
+import { ShoppingBag, Utensils, Coffee, Sprout, MessageCircle } from 'lucide-react';
+import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
 const CONTACT_NUMBER = '5532999943917';
 
 const WhatsAppLink: React.FC<{ number: string }> = ({ number }) => (
   <a className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-green-700 hover:text-green-900" href={`https://wa.me/${number.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
-    <Phone size={16} /> {number}
+    <FaWhatsapp size={16} aria-hidden="true" /> {number}
+  </a>
+);
+const InstagramLink: React.FC<{ username: string }> = ({ username }) => (
+  <a className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-pink-600 hover:text-pink-800" href={`https://instagram.com/${username}`} target="_blank" rel="noreferrer">
+    <FaInstagram size={16} aria-hidden="true" /> {username}
+    {/*
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.34 3.608 1.314.975.975 1.252 2.242 1.314 3.608.058 1.266.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.062 1.366-.34 2 
+    .633-1.314 3.608-.975.975-2.242 1.252-3.608 1.314-1.266.058-1.645.069-4.85.069s-3.584-.012-4.85-.07c-1.366-.062-2.633-.34-3.608-1.314-.975-.975-1.252-2.242-1.314-3.608C2.175 15.747 2.163 15.368 2.163 12s.012-3.584.07-4.85c.062-1.366.34-2.633 1.314-3.608C4.522 2.503 5.789 2.226 7.155 2.163 8.421 2.105 8.8 2.163 12 2.163zm0-2C8.741 0 8.332 0 .163c-.17-.002-.34-.003-.51-.003S7 .002 .163C7 .002 .002 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002 .002 .002S7 .002z"/></svg> {username}
+    */}
   </a>
 );
 
@@ -26,6 +36,7 @@ export const LocalTips: React.FC = () => {
             <p className="text-gray-600 text-sm flex-grow">
               Excelente opção no povoado. Funciona dia e noite com itens de mercearia (arroz, alho, cebola, etc.), cerveja gelada e petiscos deliciosos à noite.
             </p>
+            <InstagramLink username="vendadoroberto" />
           </div>
 
           {/* Dica 2 */}
@@ -34,12 +45,13 @@ export const LocalTips: React.FC = () => {
               <div className="p-2 bg-orange-100 text-orange-600 rounded-lg">
                 <Utensils size={24} />
               </div>
-              <h3 className="font-bold text-lg text-gray-800">Cantinho da Tia Josi</h3>
+              <h3 className="font-bold text-lg text-gray-800">Cantina da Tia Josi</h3>
             </div>
             <p className="text-gray-600 text-sm flex-grow">
               Comida caseira feita com carinho. O restaurante funciona mediante agendamento, perfeito para um almoço em família com sabor mineiro.
             </p>
-            <WhatsAppLink number="32 99922-0037" />
+            <WhatsAppLink number="(32) 99922-0037" />
+            <InstagramLink username="cantinadatiajosi" />
           </div>
 
           {/* Dica 3 */}
@@ -53,25 +65,41 @@ export const LocalTips: React.FC = () => {
             <p className="text-gray-600 text-sm flex-grow">
               Experimente os biscoitos artesanais vendidos separadamente ou agende um delicioso café colonial com a Jô, uma biscoiteira de mão cheia.
             </p>
-            <WhatsAppLink number="32 99930-8338" />
+            <WhatsAppLink number="(32) 99930-8338" />
+            <InstagramLink username="biscoitoscaseirosdajo" />
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-100 flex flex-col h-full">
             <div className="flex items-center gap-3 mb-4"><div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><Sprout size={24} /></div><h3 className="font-bold text-lg text-gray-800">Meliponário Grota do Recreio</h3></div>
             <p className="text-gray-600 text-sm flex-grow">Uma aula viva de biologia: conheça a estrutura das colmeias racionais e participe de uma degustação orientada de méis raros, com nuances florais e ácidas únicas.</p>
-            <WhatsAppLink number="32 99817-0301" />
+            <WhatsAppLink number="(32) 99817-0301" />
+            <InstagramLink username="mel.grotadorecreio" />
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-100 flex flex-col h-full">
             <div className="flex items-center gap-3 mb-4"><div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><Utensils size={24} /></div><h3 className="font-bold text-lg text-gray-800">Casal Gastrô</h3></div>
             <p className="text-gray-600 text-sm flex-grow">Produção artesanal e vivência rural com queijo Minas Artesanal, derivados de leite, charcutaria, pães, molhos e geleias. Uma imersão saborosa na cultura gastronômica mineira, reconhecida em publicações e eventos oficiais do estado.</p>
-            <WhatsAppLink number="31 99967-4467" />
+            <WhatsAppLink number="(31) 99967-4467" />
+            <InstagramLink username="casalgastromg" />
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-100 flex flex-col h-full">
             <div className="flex items-center gap-3 mb-4"><div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><ShoppingBag size={24} /></div><h3 className="font-bold text-lg text-gray-800">Memorial e Ateliê 2 Irmãs</h3></div>
             <p className="text-gray-600 text-sm flex-grow">Conheça as raízes do artesanato de Resende Costa em um espaço rústico e autêntico. Descubra ferramentas históricas centenárias, resgate histórias do nosso povoado e sente-se ao tear para tecer com as próprias mãos um pedacinho dessa tradição. A visita precisa ser agendada e tem o custo de R$ 10,00 por pessoa.</p>
-            <WhatsAppLink number="32 99958-3420" />
+            <WhatsAppLink number="(32) 99958-3420" />
+          </div>
+          
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-100 flex flex-col h-full">
+             <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-orange-100 text-orange-600 rounded-lg">
+                <Coffee size={24} />
+              </div>
+              <h3 className="font-bold text-lg text-gray-800">Viés da estância</h3>
+            </div>
+            <p className="text-gray-600 text-sm flex-grow">
+              Sabores da nossa terra: Produção familiar de café especial, doce de leite, queijos e iogurte natural, feitos com ingredientes frescos, cuidado e tradição. Nosso café foi 1º lugar no Concurso Regional de Qualidade de Café de São João del-Rei. Uma experiência de sabores para levar um pedacinho da nossa terra com você.
+            </p>
+            <WhatsAppLink number="(32) 99809-8941" />
           </div>
 
           <div className="bg-green-900 p-6 rounded-xl shadow-sm text-white flex flex-col h-full">
